@@ -1,21 +1,30 @@
 import { useEffect, useState } from "react";
 import ApiRequest, { RequestParams } from "../utils/ApiRequests";
-import { DASHBOARD_URL, REQUEST_URL } from "../constants/Constant";
+import { USER_LIST_URL } from "../constants/Constant";
+import UserList from "./UserList";
 
 export default function Dashboard() {
-  const [message, setMessage] = useState('');
 
-  interface Message {
-    message: string;
+  interface UserListType {
+    name: string,
+    dob: string
   }
+
+  const [users, setUsers] = useState<UserListType[]>([]);
 
   useEffect(() => {
     const fetchData = async() => {
       try {
-        const params: RequestParams = { url_params: [REQUEST_URL, DASHBOARD_URL] };
-        const response = await ApiRequest<Message>(params);
-        if (response?.data?.message)  {
-          setMessage(response.data.message)
+        const params: RequestParams = {
+          url_params: [USER_LIST_URL],
+          transform: (data: any) => data.map(([name, dob]: [string, string]) => ({ name, dob }))
+        };
+        const response = await ApiRequest<UserListType[]>(params);
+
+        if (response && response.data) {
+          setUsers(response.data)
+        } else {
+          console.error("Error fetching data:");
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -26,7 +35,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1>{message ? message : 'Loading...'}</h1>
+      <h1>{ users ? <UserList users={users} /> : 'No users available'}</h1>
     </div>
   );
 }
