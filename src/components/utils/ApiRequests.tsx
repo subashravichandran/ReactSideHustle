@@ -3,7 +3,7 @@ interface ApiResponse<T = any> {
   data?: T;        // The actual response data (generic type)
 }
 
-interface RequestParams {
+export interface RequestParams {
   method?: string;
   headers?: HeadersInit;
   url_params: string[];

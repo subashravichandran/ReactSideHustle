@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import ApiRequest from "../utils/ApiRequests";
+import ApiRequest, { RequestParams } from "../utils/ApiRequests";
 import { DASHBOARD_URL, REQUEST_URL } from "../constants/Constant";
 
 export default function Dashboard() {
@@ -12,7 +12,8 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async() => {
       try {
-        const response = await ApiRequest<Message>({ url_params: [REQUEST_URL, DASHBOARD_URL] });
+        const params: RequestParams = { url_params: [REQUEST_URL, DASHBOARD_URL] };
+        const response = await ApiRequest<Message>(params);
         if (response?.data?.message)  {
           setMessage(response.data.message)
         }
